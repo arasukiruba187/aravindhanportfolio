@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { parseMediaUrl } from "@/lib/parseMediaUrl";
 
 interface PortfolioItem {
   id: string;
   title: string;
   category: string;
   videoUrl: string;
+  youtubeUrl?: string;
   thumbnailUrl: string;
   description: string;
   isFeatured: boolean;
@@ -127,20 +129,20 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
         </nav>
       </header>
 
-      {/* Scroll-fade container for the content */}
+      {/* ── DESKTOP VIEW LAYOUT (Hidden on mobile) ── */}
       <motion.div
         style={{ opacity: contentOpacity, y: contentY }}
-        className="flex-1 flex flex-col justify-between items-stretch relative"
+        className="hidden md:flex flex-1 flex-col justify-between items-stretch relative"
       >
-        {/* Center Wrapper: centered with natural vertical flow to prevent overlap */}
-        <div className="flex-1 relative flex flex-col items-center justify-center gap-6 md:gap-10 w-full z-10 py-4">
-          {/* Center Headings */}
-          <div className="flex flex-col items-center justify-center text-center max-w-xl">
+        {/* Center Wrapper: centered between header and timeline */}
+        <div className="flex-1 relative flex items-center justify-center w-full z-10">
+          {/* Center Headings (Absolute position at the top of the center wrapper) */}
+          <div className="absolute top-0 flex flex-col items-center justify-center text-center pt-2 md:pt-4">
             <motion.h1
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="a-hero-title font-body text-lg sm:text-2xl md:text-3xl lg:text-4xl text-[#e1e6e1] font-light leading-snug tracking-normal mb-2 uppercase"
+              className="a-hero-title font-body text-xl md:text-3xl lg:text-4xl text-[#e1e6e1] font-light leading-none tracking-normal mb-2"
             >
               {tagline}
             </motion.h1>
@@ -148,16 +150,16 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="a-desc-sm font-body text-[9px] sm:text-[11px] md:text-[12px] text-white/50 max-w-[450px] leading-relaxed px-4"
+              className="a-desc-sm font-body text-[10px] md:text-[12px] text-white/50 max-w-[480px] leading-relaxed"
             >
               {subtagline}
             </motion.h2>
           </div>
 
           {/* Full-width responsive SVG name */}
-          <div className="w-full flex items-center justify-center select-none pointer-events-none px-2">
+          <div className="w-full flex items-center justify-center select-none pointer-events-none">
             <svg
-              className="a-hero-name w-full h-auto max-h-[22vh] sm:max-h-[30vh]"
+              className="a-hero-name w-full h-auto max-h-[30vh]"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 1000 135"
               preserveAspectRatio="xMidYMid meet"
@@ -200,10 +202,10 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
               </div>
             </div>
 
-            {/* Tracks Container: Responsive height */}
-            <div className="flex relative w-full h-16 md:h-44 overflow-visible">
-              {/* Left Panel: Track Headers (Hidden on Mobile) */}
-              <div className="hidden md:flex w-16 md:w-20 border-r border-white/10 bg-black/25 flex-col justify-stretch z-10">
+            {/* Tracks Container */}
+            <div className="flex relative w-full h-36 md:h-44 overflow-visible">
+              {/* Left Panel: Track Headers */}
+              <div className="w-16 md:w-20 border-r border-white/10 bg-black/25 flex flex-col justify-stretch z-10">
                 {/* V2 Header */}
                 <div className="flex-1 border-b border-white/5 flex items-center px-1.5 justify-between text-white/40">
                   <span className="font-bold text-[8px]">V2</span>
@@ -244,8 +246,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                 onMouseMove={handleMouseMove} 
                 onMouseLeave={handleMouseLeave}
               >
-                {/* V2 Track (Hidden on Mobile) */}
-                <div className="hidden md:flex flex-1 border-b border-white/5 relative items-center px-2">
+                {/* V2 Track (Text overlays / Adjustment layers) */}
+                <div className="flex-1 border-b border-white/5 relative flex items-center px-2">
                   <div className="absolute left-[5%] w-[40%] h-[70%] border border-[#f73a0b]/30 bg-[#f73a0b]/5 rounded-sm flex items-center justify-between px-2 text-[7px] text-[#f73a0b] opacity-60">
                     <span>Adjustment Layer [Grade]</span>
                     <span className="hidden sm:inline">LUT_Slog3_Rec709.cube</span>
@@ -255,8 +257,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                   </div>
                 </div>
 
-                {/* V1 Track (Main Video Clips - Full height on Mobile) */}
-                <div className="flex-1 md:flex-initial md:h-12 relative flex items-stretch py-1">
+                {/* V1 Track (Main Video Clips with Staggered Entrance Scaling) */}
+                <div className="flex-1 border-b border-white/5 relative flex items-stretch py-1">
                   {timelineItems.map((item, idx) => {
                     const widthPercent = 100 / timelineItems.length;
                     const leftPercent = idx * widthPercent;
@@ -282,18 +284,18 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                           transformOrigin: "bottom",
                         }}
                         onMouseEnter={() => handleTimelineHover(idx, item)}
-                        className={`absolute top-1 bottom-1 border rounded-[3px] flex flex-col justify-center gap-1 p-1 md:p-1.5 cursor-pointer transition-all duration-200 z-10 overflow-hidden ${colorClass}`}
+                        className={`absolute top-1 bottom-1 border rounded-[3px] flex flex-col justify-between p-1.5 cursor-pointer transition-all duration-200 z-10 overflow-visible ${colorClass}`}
                         data-mouse="link"
                       >
-                        <div className="flex justify-center md:justify-between items-center leading-none">
-                          <span className="font-bold text-[8px] md:text-[8px] text-white truncate max-w-[95%] uppercase">
-                            {String(item.title).replace(/\s+/g, "_")}
+                        <div className="flex justify-between items-center leading-none">
+                          <span className="font-bold text-[7px] md:text-[8px] text-white truncate max-w-[80%] uppercase">
+                            {String(item.title).replace(/\s+/g, "_")}.mp4
                           </span>
                           <span className="text-[6px] text-white/40 hidden md:inline font-mono">
-                            .mp4
+                            V{String(idx + 1).padStart(2, "0")}
                           </span>
                         </div>
-                        <div className="hidden md:flex justify-between items-center text-[6px] text-white/50 leading-none">
+                        <div className="flex justify-between items-center text-[6px] text-white/50 leading-none">
                           <span className="truncate max-w-[60%]">{item.category}</span>
                           <span>24fps</span>
                         </div>
@@ -302,8 +304,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                   })}
                 </div>
 
-                {/* A1 Track (Hidden on Mobile) */}
-                <div className="hidden md:flex flex-1 border-b border-white/5 relative items-stretch py-1">
+                {/* A1 Track (Main Audios with custom waveforms) */}
+                <div className="flex-1 border-b border-white/5 relative flex items-stretch py-1">
                   {timelineItems.map((item, idx) => {
                     const widthPercent = 100 / timelineItems.length;
                     const leftPercent = idx * widthPercent;
@@ -333,8 +335,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                   })}
                 </div>
 
-                {/* A2 Track (Hidden on Mobile) */}
-                <div className="hidden md:flex relative items-center px-2">
+                {/* A2 Track (Background Music Track) */}
+                <div className="flex-1 relative flex items-center px-2">
                   <div className="absolute left-[1%] w-[98%] h-[70%] border border-teal-500/30 bg-teal-950/30 rounded-sm flex items-center justify-between px-2 text-[7px] text-teal-400/90 overflow-hidden">
                     <span className="truncate max-w-[30%] uppercase">Soundtrack_Cinematic_Foley.wav</span>
                     <div className="flex-1 h-3 flex items-center justify-around gap-[1.5px] opacity-25 px-8">
@@ -364,6 +366,149 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── MOBILE VIEW LAYOUT (Completely custom touch-responsive design) ── */}
+      <motion.div
+        style={{ opacity: contentOpacity, y: contentY }}
+        className="flex md:hidden flex-1 flex-col justify-between items-stretch relative"
+      >
+        {/* Center headings and title */}
+        <div className="flex-1 flex flex-col justify-center items-center text-center gap-6 px-2 py-4">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <motion.h1
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="font-body text-lg sm:text-xl text-[#e1e6e1] font-light leading-snug tracking-normal uppercase"
+            >
+              {tagline}
+            </motion.h1>
+            <motion.h2
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="font-body text-[10px] text-white/45 max-w-[280px] leading-relaxed px-2"
+            >
+              {subtagline}
+            </motion.h2>
+          </div>
+
+          {/* Full-width responsive SVG name */}
+          <div className="w-full select-none pointer-events-none px-2">
+            <svg
+              className="w-full h-auto max-h-[16vh]"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 1000 135"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <motion.text
+                x="500"
+                y="110"
+                fontSize="130"
+                fontWeight="900"
+                textAnchor="middle"
+                className="font-display fill-[#e1e6e1]"
+                initial={{ letterSpacing: "0.12em", opacity: 0 }}
+                animate={{ letterSpacing: "normal", opacity: 1 }}
+                transition={{ duration: 1.3, delay: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
+              >
+                ARAVINDHAN R
+              </motion.text>
+            </svg>
+          </div>
+        </div>
+
+        {/* Swipe-friendly Horizontal Filmstrip Slider Carousel */}
+        <div className="relative w-full z-20 pb-4">
+          {/* Active clip status monitor */}
+          <div className="flex justify-between items-center px-1.5 pb-2 border-b border-white/10 mb-3 font-mono text-[9px] text-white/50 tracking-wider">
+            <span className="text-[#f73a0b] font-bold">ACTIVE CLIP: {String(activeIndex + 1).padStart(2, "0")}</span>
+            <span className="uppercase max-w-[65%] truncate text-[#e1e6e1] font-semibold">
+              {timelineItems[activeIndex]?.title}.mp4
+            </span>
+          </div>
+
+          {/* Swipeable container */}
+          <div 
+            className="flex gap-2.5 overflow-x-auto py-2 w-full touch-pan-x select-none snap-x snap-mandatory"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {timelineItems.map((item, idx) => {
+              const isActive = activeIndex === idx;
+              
+              // Colors based on indexing
+              const colors = [
+                "border-[#2563eb]/40 bg-[#1e3a8a]/20", // Iris Blue
+                "border-[#7c3aed]/40 bg-[#581c87]/20", // Violet
+                "border-[#059669]/40 bg-[#065f46]/20", // Forest Green
+                "border-[#d97706]/40 bg-[#78350f]/20", // Mango Gold
+                "border-[#475569]/40 bg-[#1e293b]/20", // Stone Slate
+                "border-[#db2777]/40 bg-[#831843]/20", // Rose Pink
+              ];
+              const colorClass = colors[idx % colors.length];
+
+              // Parse thumbnail
+              const getThumbnailUrl = (pItem: PortfolioItem) => {
+                if (pItem.thumbnailUrl && pItem.thumbnailUrl.trim() !== "") {
+                  const driveMatch = pItem.thumbnailUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+                  if (driveMatch) {
+                    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w300`;
+                  }
+                  return pItem.thumbnailUrl;
+                }
+                const parsed = parseMediaUrl(pItem.youtubeUrl || pItem.videoUrl);
+                if (parsed.platform === "youtube" && parsed.thumbnailUrl) {
+                  return parsed.thumbnailUrl;
+                }
+                if (parsed.platform === "drive" && parsed.thumbnailUrl) {
+                  return parsed.thumbnailUrl;
+                }
+                return "";
+              };
+
+              const thumb = getThumbnailUrl(item);
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => handleTimelineHover(idx, item)}
+                  className={`flex-shrink-0 w-28 h-16 rounded border relative overflow-hidden transition-all duration-300 snap-center ${
+                    isActive
+                      ? "border-[#f73a0b] ring-1 ring-[#f73a0b]/60 opacity-100 scale-95"
+                      : "opacity-40 " + colorClass
+                  }`}
+                >
+                  {/* Thumbnail blur background */}
+                  {thumb && (
+                    <img
+                      src={thumb}
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover pointer-events-none mix-blend-overlay opacity-60"
+                    />
+                  )}
+                  {/* Sprocket-holes aesthetic details on sides for Post-production feel */}
+                  <div className="absolute inset-0 p-2 flex flex-col justify-between z-10 bg-black/40">
+                    <div className="flex justify-between items-center text-[7px] font-bold text-white/60 leading-none">
+                      <span>CLIP.{String(idx + 1).padStart(2, "0")}</span>
+                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#f73a0b] animate-pulse" />}
+                    </div>
+                    <span className="text-[8px] font-bold text-white truncate max-w-full uppercase leading-none">
+                      {item.title}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Swipe indicator label */}
+          <div className="flex justify-center items-center gap-1.5 pt-2.5 text-white/30 font-mono text-[7px] tracking-[0.25em] uppercase">
+            <span>◄</span>
+            <span>TAP CLIPS TO AUDITION TIMELINE</span>
+            <span>►</span>
           </div>
         </div>
       </motion.div>

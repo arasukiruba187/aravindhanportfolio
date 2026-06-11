@@ -11,10 +11,10 @@ interface ServiceItem {
 export default function Services({ services }: { services: ServiceItem[] }) {
   // If no services provided, fallback to a clean premium list
   const displayServices = services.length > 0 ? services : [
-    { title: "Video Editing", description: "" },
-    { title: "Color Grading", description: "" },
-    { title: "Sound Design", description: "" },
-    { title: "Motion Graphics", description: "" },
+    { title: "YouTube Editing", description: "High-retention, engaging edits with premium pacing, color, and sound design." },
+    { title: "Reels & Shorts", description: "Fast-paced, hook-driven vertical edits designed to trigger algorithm virality." },
+    { title: "Commercial Editing", description: "High-production-value brand ads and cinematic product showcases." },
+    { title: "Color Grading", description: "Hollywood-grade cinematic color processing and exposure calibration." },
   ];
 
   // Animation variants for stagger-revealing list items on scroll
@@ -44,7 +44,7 @@ export default function Services({ services }: { services: ServiceItem[] }) {
     >
       <div className="w-full flex flex-col justify-center">
         {/* Section title */}
-        <div className="container px-4 md:px-8 mb-10">
+        <div className="container px-4 md:px-8 mb-10 text-center md:text-left">
           <h2 className="a-tag font-mono text-[9px] tracking-[0.3em] text-[#f73a0b] uppercase mb-4">
             (Services)
           </h2>
@@ -53,18 +53,17 @@ export default function Services({ services }: { services: ServiceItem[] }) {
           </h3>
         </div>
 
-        {/* Large Services Rows List with stagger scroll entrance */}
+        {/* ── DESKTOP SERVICES LIST (Hidden on mobile) ── */}
         <motion.div
           variants={listVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
-          className="w-full flex flex-col border-t border-[#e1e6e130] mt-6"
+          className="hidden md:flex w-full flex-col border-t border-[#e1e6e130] mt-6"
         >
           {displayServices.map((service, idx) => (
-            <motion.div
+            <div
               key={idx}
-              variants={itemVariants}
               className="a-services-row-wrap relative w-full overflow-hidden group transition-all duration-300 cursor-pointer"
               data-mouse="link"
             >
@@ -77,6 +76,41 @@ export default function Services({ services }: { services: ServiceItem[] }) {
                   {service.title}
                 </span>
               </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* ── MOBILE SERVICES LIST (Hidden on desktop - custom layouts with text) ── */}
+        <motion.div
+          variants={listVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          className="flex md:hidden w-full flex-col border-t border-[#e1e6e120] px-4"
+        >
+          {displayServices.map((service, idx) => (
+            <motion.div
+              key={idx}
+              variants={itemVariants}
+              className="border-b border-[#e1e6e115] py-6 flex flex-col gap-2.5"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] text-[#f73a0b] font-bold">
+                    #{String(idx + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-body text-base text-[#e1e6e1] font-semibold tracking-wide uppercase">
+                    {service.title}
+                  </span>
+                </div>
+                {/* Visual accent dot indicating a color grade point */}
+                <span className="w-1.5 h-1.5 rounded-full bg-[#f73a0b]/80 shadow-[0_0_8px_#f73a0b]" />
+              </div>
+              
+              {/* Detailed descriptive paragraph shown by default on mobile for depth */}
+              <p className="font-body text-xs text-white/50 leading-relaxed pl-7 pr-3">
+                {service.description || "Premium post-production service delivering polished visual assets for brands and creators."}
+              </p>
             </motion.div>
           ))}
         </motion.div>

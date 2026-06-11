@@ -28,13 +28,13 @@ export default function About({ aboutText, imageUrl }: AboutProps) {
     // Check if it's a standard Google Drive file view URL
     const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
     if (driveMatch) {
-      return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+      return `https://drive.google.com/uc?id=${driveMatch[1]}`;
     }
     
     // Check if it's a Google Drive uc?id URL
     const driveUcMatch = url.match(/drive\.google\.com\/uc\?.*id=([a-zA-Z0-9_-]+)/);
     if (driveUcMatch) {
-      return `https://lh3.googleusercontent.com/d/${driveUcMatch[1]}`;
+      return `https://drive.google.com/uc?id=${driveUcMatch[1]}`;
     }
     
     return url;
@@ -70,9 +70,10 @@ export default function About({ aboutText, imageUrl }: AboutProps) {
       data-role="section"
       data-section="about"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center max-w-6xl mx-auto w-full">
-        {/* ── Left Column: Bio Narrative & Skills ── */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col justify-center animate-fade-in">
+      {/* ── DESKTOP LAYOUT (Hidden on mobile) ── */}
+      <div className="hidden md:grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center max-w-6xl mx-auto w-full">
+        {/* Left Column: Bio Narrative & Skills */}
+        <div className="col-span-12 lg:col-span-7 flex flex-col justify-center">
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -131,10 +132,10 @@ export default function About({ aboutText, imageUrl }: AboutProps) {
           </motion.div>
         </div>
 
-        {/* ── Right Column: Portrait Image with mask-scroll parallax zoom (Compact on Mobile) ── */}
+        {/* Right Column: Portrait Image with mask-scroll parallax zoom */}
         <div className="col-span-12 lg:col-span-5 flex justify-center lg:justify-end">
           <div 
-            className="a-about-image-wrap overflow-hidden rounded-sm border border-white/5 shadow-2xl w-full max-w-[320px] lg:max-w-full relative max-h-[48svh] lg:max-h-[70svh]"
+            className="a-about-image-wrap overflow-hidden rounded-sm border border-white/5 shadow-2xl w-full max-w-[320px] lg:max-w-full relative max-h-[70svh]"
             style={{
               aspectRatio: "3/4"
             }}
@@ -152,6 +153,76 @@ export default function About({ aboutText, imageUrl }: AboutProps) {
             />
           </div>
         </div>
+      </div>
+
+      {/* ── MOBILE LAYOUT (Completely custom centered flow layout) ── */}
+      <div className="flex md:hidden flex-col items-center justify-center text-center max-w-sm mx-auto w-full gap-8">
+        <div>
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="font-mono text-[9px] tracking-[0.3em] text-[#f73a0b] uppercase mb-2"
+          >
+            (About)
+          </motion.h2>
+          <motion.h3
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="font-body text-[17px] text-[#e1e6e1] font-normal leading-relaxed px-2"
+          >
+            India-based video editor exploring post-production &amp; storytelling.
+          </motion.h3>
+        </div>
+
+        {/* Centered Circular Portrait Image with breathing glow border */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.8 }}
+          className="relative w-48 h-48 rounded-full overflow-hidden border-2 border-[#f73a0b]/80 shadow-[0_0_15px_rgba(247,58,11,0.25)]"
+        >
+          <img
+            src={defaultImage}
+            alt="Aravindhan R"
+            className="object-cover w-full h-full"
+          />
+        </motion.div>
+
+        {/* Narrative bio */}
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="font-body text-xs text-white/70 leading-relaxed px-4"
+        >
+          {aboutText || (
+            "I've always been drawn to visuals, the way a single moment can feel completely different depending on how it's captured or edited. I collaborate with clients across the globe on post-production, grading, foley sound design, and post workflow development."
+          )}
+        </motion.p>
+
+        {/* Skills Chips Grid */}
+        <motion.div
+          variants={listVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-2 gap-2.5 w-full px-6"
+        >
+          {["Adobe Premiere", "DaVinci Resolve", "After Effects", "Color Grading", "Sound Design", "VFX"].map((skill) => (
+            <motion.span
+              key={skill}
+              variants={itemVariants}
+              className="font-mono text-[8px] tracking-[0.15em] text-[#e1e6e1] border border-white/10 rounded-sm py-2 px-2 uppercase bg-black/10 text-center truncate"
+            >
+              {skill}
+            </motion.span>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
