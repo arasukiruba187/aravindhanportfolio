@@ -12,6 +12,7 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import MediaEmbed from "@/components/MediaEmbed";
 import Fireflies from "@/components/Fireflies";
+import StatsSection from "@/components/StatsSection";
 import { parseMediaUrl } from "@/lib/parseMediaUrl";
 import defaultConfig from "@/data/config.json";
 
@@ -201,6 +202,9 @@ export default function Home() {
                 onVideoChange={setActiveVideoUrl}
                 items={portfolioItems}
               />
+
+            {/* Animated Statistics — credibility block */}
+            <StatsSection />
 
             {/* About Narrative split overlay */}
             <About
