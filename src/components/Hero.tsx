@@ -370,19 +370,19 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
         </div>
       </motion.div>
 
-      {/* ── MOBILE VIEW LAYOUT (Completely custom touch-responsive design) ── */}
+      {/* ── MOBILE VIEW LAYOUT (Timeline matching desktop but touch-optimized) ── */}
       <motion.div
         style={{ opacity: contentOpacity, y: contentY }}
         className="flex md:hidden flex-1 flex-col justify-between items-stretch relative"
       >
-        {/* Center headings and title */}
-        <div className="flex-1 flex flex-col justify-center items-center text-center gap-6 px-2 py-4">
+        {/* Center headings and SVG name */}
+        <div className="flex-1 flex flex-col justify-center items-center text-center gap-4 px-2 py-4">
           <div className="flex flex-col items-center justify-center gap-2">
             <motion.h1
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-body text-lg sm:text-xl text-[#e1e6e1] font-light leading-snug tracking-normal uppercase"
+              className="font-body text-base sm:text-xl text-[#e1e6e1] font-light leading-snug tracking-normal uppercase"
             >
               {tagline}
             </motion.h1>
@@ -397,9 +397,9 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
           </div>
 
           {/* Full-width responsive SVG name */}
-          <div className="w-full select-none pointer-events-none px-2">
+          <div className="w-full select-none pointer-events-none px-1">
             <svg
-              className="w-full h-auto max-h-[16vh]"
+              className="w-full h-auto max-h-[18vh]"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 1000 135"
               preserveAspectRatio="xMidYMid meet"
@@ -421,94 +421,143 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
           </div>
         </div>
 
-        {/* Swipe-friendly Horizontal Filmstrip Slider Carousel */}
+        {/* Mobile Timeline Panel – tap anywhere to move playhead, no thumbnails */}
         <div className="relative w-full z-20 pb-4">
-          {/* Active clip status monitor */}
-          <div className="flex justify-between items-center px-1.5 pb-2 border-b border-white/10 mb-3 font-mono text-[9px] text-white/50 tracking-wider">
-            <span className="text-[#f73a0b] font-bold">ACTIVE CLIP: {String(activeIndex + 1).padStart(2, "0")}</span>
-            <span className="uppercase max-w-[65%] truncate text-[#e1e6e1] font-semibold">
-              {timelineItems[activeIndex]?.title}.mp4
-            </span>
-          </div>
+          <div className="w-full flex flex-col font-mono text-[9px] select-none border border-white/10 bg-black/40 backdrop-blur-md rounded-md overflow-hidden">
+            {/* Timeline Ruler Header */}
+            <div className="w-full h-7 border-b border-white/10 flex items-center bg-black/30 relative">
+              {/* Left timecode readout */}
+              <div className="w-14 border-r border-white/10 h-full flex items-center justify-center font-bold text-[#f73a0b] text-[9px] tracking-wider font-mono">
+                {hoverTimecode}
+              </div>
+              {/* Ruler ticks */}
+              <div className="flex-1 h-full relative overflow-hidden flex items-end pb-1">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="absolute bottom-0 h-1.5 border-l border-white/20" style={{ left: `${(i / 5) * 100}%` }} />
+                ))}
+              </div>
+            </div>
 
-          {/* Swipeable container */}
-          <div 
-            className="flex gap-2.5 overflow-x-auto py-2 w-full touch-pan-x select-none snap-x snap-mandatory"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {timelineItems.map((item, idx) => {
-              const isActive = activeIndex === idx;
-              
-              // Colors based on indexing
-              const colors = [
-                "border-[#2563eb]/40 bg-[#1e3a8a]/20", // Iris Blue
-                "border-[#7c3aed]/40 bg-[#581c87]/20", // Violet
-                "border-[#059669]/40 bg-[#065f46]/20", // Forest Green
-                "border-[#d97706]/40 bg-[#78350f]/20", // Mango Gold
-                "border-[#475569]/40 bg-[#1e293b]/20", // Stone Slate
-                "border-[#db2777]/40 bg-[#831843]/20", // Rose Pink
-              ];
-              const colorClass = colors[idx % colors.length];
-
-              // Parse thumbnail
-              const getThumbnailUrl = (pItem: PortfolioItem) => {
-                if (pItem.thumbnailUrl && pItem.thumbnailUrl.trim() !== "") {
-                  const driveMatch = pItem.thumbnailUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-                  if (driveMatch) {
-                    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w300`;
-                  }
-                  return pItem.thumbnailUrl;
+            {/* Clips track – tap/touch to move playhead */}
+            <div
+              className="relative w-full flex flex-col"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+                setPlayheadX(percent);
+                // Determine which clip was tapped and set it active
+                const itemIdx = Math.min(
+                  timelineItems.length - 1,
+                  Math.floor((percent / 100) * timelineItems.length)
+                );
+                if (timelineItems[itemIdx]) {
+                  handleTimelineHover(itemIdx, timelineItems[itemIdx]);
                 }
-                const parsed = parseMediaUrl(pItem.youtubeUrl || pItem.videoUrl);
-                if (parsed.platform === "youtube" && parsed.thumbnailUrl) {
-                  return parsed.thumbnailUrl;
-                }
-                if (parsed.platform === "drive" && parsed.thumbnailUrl) {
-                  return parsed.thumbnailUrl;
-                }
-                return "";
-              };
-
-              const thumb = getThumbnailUrl(item);
-
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => handleTimelineHover(idx, item)}
-                  className={`flex-shrink-0 w-28 h-16 rounded border relative overflow-hidden transition-all duration-300 snap-center ${
-                    isActive
-                      ? "border-[#f73a0b] ring-1 ring-[#f73a0b]/60 opacity-100 scale-95"
-                      : "opacity-40 " + colorClass
-                  }`}
-                >
-                  {/* Thumbnail blur background */}
-                  {thumb && (
-                    <img
-                      src={thumb}
-                      alt=""
-                      className="absolute inset-0 w-full h-full object-cover pointer-events-none mix-blend-overlay opacity-60"
-                    />
-                  )}
-                  {/* Sprocket-holes aesthetic details on sides for Post-production feel */}
-                  <div className="absolute inset-0 p-2 flex flex-col justify-between z-10 bg-black/40">
-                    <div className="flex justify-between items-center text-[7px] font-bold text-white/60 leading-none">
-                      <span>CLIP.{String(idx + 1).padStart(2, "0")}</span>
-                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#f73a0b] animate-pulse" />}
-                    </div>
-                    <span className="text-[8px] font-bold text-white truncate max-w-full uppercase leading-none">
-                      {item.title}
-                    </span>
-                  </div>
+              }}
+            >
+              {/* V1 Clips track */}
+              <div className="relative flex items-stretch border-b border-white/5" style={{ height: 44 }}>
+                {/* Left panel label */}
+                <div className="w-14 shrink-0 border-r border-white/10 bg-black/25 flex items-center justify-center text-[8px] font-bold text-white">
+                  V1
                 </div>
-              );
-            })}
+                {/* Clips area */}
+                <div className="flex-1 relative flex items-stretch py-1">
+                  {timelineItems.map((item, idx) => {
+                    const widthPercent = 100 / timelineItems.length;
+                    const leftPercent = idx * widthPercent;
+                    const colors = [
+                      "bg-[#1e3a8a]/60 border-[#2563eb]/50",
+                      "bg-[#581c87]/60 border-[#7c3aed]/50",
+                      "bg-[#065f46]/60 border-[#059669]/50",
+                      "bg-[#78350f]/60 border-[#d97706]/50",
+                      "bg-[#1e293b]/60 border-[#475569]/50",
+                      "bg-[#831843]/60 border-[#db2777]/50",
+                    ];
+                    const isActive = activeIndex === idx;
+                    return (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, scaleY: 0 }}
+                        animate={{ opacity: 1, scaleY: 1 }}
+                        transition={{ duration: 0.55, delay: 0.4 + idx * 0.07, ease: [0.16, 1, 0.3, 1] as const }}
+                        style={{
+                          left: `${leftPercent}%`,
+                          width: `${widthPercent - 0.5}%`,
+                          transformOrigin: "bottom",
+                        }}
+                        className={`absolute top-0.5 bottom-0.5 border rounded-[3px] flex flex-col justify-between p-1 overflow-hidden ${
+                          colors[idx % colors.length]
+                        } ${isActive ? "ring-1 ring-white/30" : ""}`}
+                      >
+                        <span className="text-[6px] font-bold text-white/70 uppercase truncate leading-none">
+                          {String(item.title).replace(/\s+/g, "_").substring(0, 8)}
+                        </span>
+                        <span className="text-[5px] text-white/40 leading-none">{item.category}</span>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* A1 Waveform track */}
+              <div className="relative flex items-stretch" style={{ height: 28 }}>
+                <div className="w-14 shrink-0 border-r border-white/10 bg-black/25 flex items-center justify-center text-[7px] font-bold text-white/60 font-mono">
+                  A1
+                </div>
+                <div className="flex-1 relative flex items-stretch">
+                  {timelineItems.map((item, idx) => {
+                    const widthPercent = 100 / timelineItems.length;
+                    const leftPercent = idx * widthPercent;
+                    return (
+                      <div
+                        key={item.id}
+                        style={{ left: `${leftPercent}%`, width: `${widthPercent - 0.5}%` }}
+                        className="absolute top-1 bottom-1 border border-emerald-600/30 bg-emerald-900/30 rounded-[3px] flex items-center px-1 overflow-hidden"
+                      >
+                        <div className="w-full h-full flex items-center justify-around gap-px opacity-40">
+                          {Array.from({ length: 8 }).map((_, wIdx) => {
+                            const h = 4 + Math.sin(wIdx * 0.8 + idx) * 4;
+                            return <div key={wIdx} className="bg-emerald-400 w-px" style={{ height: `${Math.max(2, h)}px` }} />;
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Playhead line + triangle */}
+              <div
+                className="absolute top-0 bottom-0 w-[1px] bg-[#f73a0b] pointer-events-none z-30 shadow-[0_0_6px_#f73a0b]"
+                style={{ left: `calc(56px + (100% - 56px) * ${playheadX / 100})` }}
+              />
+              <div
+                className="absolute top-0 w-2.5 h-2.5 bg-[#f73a0b] pointer-events-none z-30"
+                style={{
+                  left: `calc(56px + (100% - 56px) * ${playheadX / 100})`,
+                  transform: "translate(-50%, 0)",
+                  clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+                }}
+              />
+            </div>
+
+            {/* Active clip info bar */}
+            <div className="flex justify-between items-center px-3 py-1.5 border-t border-white/5 bg-black/20">
+              <span className="text-[#f73a0b] font-bold text-[8px] tracking-wider">CLIP_{String(activeIndex + 1).padStart(2, "0")}</span>
+              <span className="text-[#e1e6e1] text-[8px] uppercase truncate max-w-[60%] font-semibold tracking-wider">
+                {timelineItems[activeIndex]?.title}
+              </span>
+              <span className="text-white/30 text-[7px] font-mono">24fps</span>
+            </div>
           </div>
 
-          {/* Swipe indicator label */}
-          <div className="flex justify-center items-center gap-1.5 pt-2.5 text-white/30 font-mono text-[7px] tracking-[0.25em] uppercase">
-            <span>◄</span>
-            <span>TAP CLIPS TO AUDITION TIMELINE</span>
-            <span>►</span>
+          {/* Tap hint */}
+          <div className="flex justify-center items-center gap-1 pt-2 text-white/25 font-mono text-[7px] tracking-[0.2em] uppercase">
+            <span>TAP TIMELINE TO SCRUB</span>
           </div>
         </div>
       </motion.div>

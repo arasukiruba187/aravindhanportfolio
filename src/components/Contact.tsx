@@ -188,9 +188,9 @@ export default function Contact({ email, phone, socials }: ContactProps) {
           href={`mailto:${displayEmail}?subject=Video%20Editing%20Query`}
           target="_blank"
           rel="noreferrer noopener"
-          className="block w-full py-4 border-y border-white/10 hover:text-[#f73a0b] font-display text-[6.2vw] text-[#e1e6e1] uppercase tracking-wide break-all leading-snug"
+          className="block w-full py-4 border-y border-white/10 hover:text-[#f73a0b] font-display text-[5.5vw] text-[#e1e6e1] tracking-wide break-all leading-snug"
         >
-          {displayEmail}
+          {displayEmail.toLowerCase()}
         </motion.a>
 
         {/* Mobile touch button stack (Well spaced and padded) */}

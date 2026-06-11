@@ -175,45 +175,45 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
         </div>
       </div>
 
-      {/* ── MOBILE VIEW GRID (Hidden on desktop - custom film shape & scroll animation) ── */}
+      {/* ── MOBILE VIEW GRID (2 per row, 2+2+1 pattern) ── */}
       <div className="block md:hidden">
-        <div className="flex flex-col border-b border-white/10 pb-5 mb-10 text-center items-center">
-          <h3 className="font-display text-4xl text-[#e1e6e1] font-bold uppercase leading-none tracking-wider">
+        <div className="flex flex-col border-b border-white/10 pb-4 mb-8 text-center items-center">
+          <h3 className="font-display text-3xl text-[#e1e6e1] font-bold uppercase leading-none tracking-wider">
             Selected Works
           </h3>
         </div>
 
-        <div className="flex flex-col gap-12 max-w-[320px] mx-auto w-full">
+        {/* 2-column grid – last odd item spans full row for a 2,2,1 pattern */}
+        <div className="grid grid-cols-2 gap-4 px-0">
           {items.map((item, idx) => {
-            const isReel = item.category?.toLowerCase() === "reels";
-            const aspectClass = isReel ? "aspect-[9/16] max-w-[240px] mx-auto" : "aspect-video w-full";
+            const isLastOdd = idx === items.length - 1 && items.length % 2 !== 0;
 
             return (
               <motion.div
                 key={item.id}
-                className="w-full flex flex-col"
-                initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                className={`flex flex-col ${isLastOdd ? "col-span-2 max-w-xs mx-auto w-full" : ""}`}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] as const }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] as const }}
               >
-                {/* Mobile Card Header */}
-                <div className="w-full flex justify-between items-end pb-2 border-b border-white/5 mb-3.5 font-mono text-[9px] tracking-wider text-white/40">
-                  <span className="text-[#f73a0b] font-bold">REEL_{String(idx + 1).padStart(3, "0")}</span>
-                  <span className="uppercase text-[8px] text-white/50">{item.category}</span>
+                {/* Card number */}
+                <div className="flex justify-between items-center pb-1.5 mb-2 font-mono text-[8px] tracking-wider text-white/35">
+                  <span className="text-[#f73a0b] font-bold">{String(idx + 1).padStart(2, "0")}</span>
+                  <span className="uppercase text-[7px] text-white/40">{item.category}</span>
                 </div>
 
-                {/* Mobile visual container */}
+                {/* Thumbnail frame – 16:9 */}
                 <div
                   onClick={() => onPlay(item)}
-                  className={`relative overflow-hidden bg-[#101010] border border-white/10 rounded-sm cursor-pointer shadow-2xl ${aspectClass}`}
+                  className="relative overflow-hidden bg-[#101010] border border-white/10 rounded-sm cursor-pointer shadow-xl aspect-video w-full"
                 >
                   {(() => {
                     const getThumbnailUrl = (pItem: PortfolioItem) => {
                       if (pItem.thumbnailUrl && pItem.thumbnailUrl.trim() !== "") {
                         const driveMatch = pItem.thumbnailUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
                         if (driveMatch) {
-                          return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w800`;
+                          return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w400`;
                         }
                         return pItem.thumbnailUrl;
                       }
@@ -222,22 +222,19 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
                       if (parsed.platform === "drive" && parsed.thumbnailUrl) return parsed.thumbnailUrl;
                       return "";
                     };
-
-                    const thumbnailUrlToShow = getThumbnailUrl(item);
-
+                    const thumb = getThumbnailUrl(item);
                     return (
                       <div className="absolute inset-0 w-full h-full overflow-hidden">
-                        {thumbnailUrlToShow && (
+                        {thumb && (
                           <img
-                            src={thumbnailUrlToShow}
+                            src={thumb}
                             alt={item.title}
                             className="absolute inset-0 w-full h-full object-cover z-0"
                           />
                         )}
-                        {/* Always show play overlay icon on mobile for intuitive click feedback */}
-                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10 hover:bg-black/20 transition-colors">
-                          <div className="w-12 h-12 rounded-full border border-white/50 flex items-center justify-center backdrop-blur-sm bg-black/25">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
+                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10 hover:bg-black/30 active:bg-black/40 transition-colors">
+                          <div className="w-9 h-9 rounded-full border border-white/50 flex items-center justify-center backdrop-blur-sm bg-black/25">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
                           </div>
                         </div>
                       </div>
@@ -245,12 +242,11 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
                   })()}
                 </div>
 
-                {/* Mobile Card Footer */}
-                <div className="w-full flex items-center justify-between pt-3">
-                  <span className="font-display text-lg uppercase tracking-wider text-[#e1e6e1] leading-tight">
+                {/* Title */}
+                <div className="pt-2">
+                  <span className="font-display text-sm uppercase tracking-wide text-[#e1e6e1] leading-tight line-clamp-1">
                     {item.title}
                   </span>
-                  <span className="font-mono text-[8px] text-white/30 uppercase tracking-widest">[TAP]</span>
                 </div>
               </motion.div>
             );

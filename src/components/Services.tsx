@@ -80,19 +80,18 @@ export default function Services({ services }: { services: ServiceItem[] }) {
           ))}
         </motion.div>
 
-        {/* ── MOBILE SERVICES LIST (Hidden on desktop - custom layouts with text) ── */}
         <motion.div
           variants={listVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
-          className="flex md:hidden w-full flex-col border-t border-[#e1e6e120] px-4"
+          className="flex md:hidden w-full flex-col px-4 pt-2"
         >
           {displayServices.map((service, idx) => (
             <motion.div
               key={idx}
               variants={itemVariants}
-              className="border-b border-[#e1e6e115] py-6 flex flex-col gap-2.5"
+              className="py-5 flex flex-col gap-2.5"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -103,11 +102,11 @@ export default function Services({ services }: { services: ServiceItem[] }) {
                     {service.title}
                   </span>
                 </div>
-                {/* Visual accent dot indicating a color grade point */}
+                {/* Visual accent dot */}
                 <span className="w-1.5 h-1.5 rounded-full bg-[#f73a0b]/80 shadow-[0_0_8px_#f73a0b]" />
               </div>
-              
-              {/* Detailed descriptive paragraph shown by default on mobile for depth */}
+
+              {/* Description paragraph */}
               <p className="font-body text-xs text-white/50 leading-relaxed pl-7 pr-3">
                 {service.description || "Premium post-production service delivering polished visual assets for brands and creators."}
               </p>
