@@ -53,7 +53,7 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
 
       {/* ── DESKTOP VIEW GRID (Hidden on mobile) ── */}
       <div className="hidden md:block">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-16 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-6 mb-16 gap-4">
           <h3 className="a-section-title-lg font-display text-4xl md:text-6xl lg:text-7xl text-[#e1e6e1] font-bold uppercase leading-none tracking-normal">
             Selected Projects
           </h3>
@@ -76,7 +76,7 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
                 transition={{ duration: 0.8, delay: (idx % 2) * 0.15, ease: [0.215, 0.61, 0.355, 1] as const }}
               >
                 {/* Card Header details */}
-                <div className="w-full flex items-end justify-between pb-3.5 border-b border-white/5">
+                <div className="w-full flex items-end justify-between pb-3.5">
                   <span className="font-mono text-[9px] tracking-widest text-[#e1e6e1a0]">
                     {String(idx + 1).padStart(3, "0")}
                   </span>
@@ -177,7 +177,7 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
 
       {/* ── MOBILE VIEW GRID (2 per row, 2+2+1 pattern) ── */}
       <div className="block md:hidden">
-        <div className="flex flex-col border-b border-white/10 pb-4 mb-8 text-center items-center">
+        <div className="flex flex-col pb-4 mb-8 text-center items-center">
           <h3 className="font-display text-3xl text-[#e1e6e1] font-bold uppercase leading-none tracking-wider">
             Selected Works
           </h3>

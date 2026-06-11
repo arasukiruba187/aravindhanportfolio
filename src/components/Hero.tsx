@@ -99,11 +99,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
-      {/* ── Header Navigation Bar (Matches DNY Header style) ── */}
-      <header className="relative w-full z-20 flex justify-between items-center h-16 mix-blend-difference">
-        <a href="/" className="a-text-link font-bold text-sm tracking-[0.25em]" data-mouse="link">
-          AR
-        </a>
+      {/* ── Header Navigation Bar ── */}
+      <header className="relative w-full z-20 flex justify-end items-center h-16 mix-blend-difference">
         <nav className="flex gap-4 sm:gap-6 md:gap-10">
           <button
             onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
