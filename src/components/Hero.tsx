@@ -379,7 +379,7 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-body text-base sm:text-xl text-[#e1e6e1] font-light leading-snug tracking-normal uppercase"
+              className="font-body text-xl sm:text-2xl text-[#e1e6e1] font-light leading-snug tracking-normal uppercase"
             >
               {tagline}
             </motion.h1>
@@ -387,7 +387,7 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-body text-[10px] text-white/45 max-w-[280px] leading-relaxed px-2"
+              className="font-body text-[13px] text-white/45 max-w-[300px] leading-relaxed px-2"
             >
               {subtagline}
             </motion.h2>
@@ -396,7 +396,7 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
           {/* Full-width responsive SVG name */}
           <div className="w-full select-none pointer-events-none px-1">
             <svg
-              className="w-full h-auto max-h-[18vh]"
+              className="w-full h-auto max-h-[26vh]"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 1000 135"
               preserveAspectRatio="xMidYMid meet"
