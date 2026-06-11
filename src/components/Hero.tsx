@@ -372,50 +372,95 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
         style={{ opacity: contentOpacity, y: contentY }}
         className="flex md:hidden flex-1 flex-col justify-between items-stretch relative"
       >
-        {/* Center headings and SVG name */}
-        <div className="flex-1 flex flex-col justify-center items-center text-center gap-4 px-2 py-4">
-          <div className="flex flex-col items-center justify-center gap-2">
-            <motion.h1
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="font-body text-base sm:text-xl text-[#e1e6e1] font-light leading-snug tracking-normal uppercase"
-            >
+        {/* Mobile hero content – fills height top-to-bottom, no dead space */}
+        <div className="flex-1 flex flex-col justify-between items-stretch px-0 pt-2 pb-2">
+
+          {/* Top: tagline */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="flex flex-col items-center text-center gap-1 px-4"
+          >
+            <h1 className="font-body text-[11px] text-white/70 font-light leading-relaxed tracking-[0.25em] uppercase">
               {tagline}
-            </motion.h1>
-            <motion.h2
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-body text-[10px] text-white/45 max-w-[280px] leading-relaxed px-2"
-            >
-              {subtagline}
-            </motion.h2>
+            </h1>
+          </motion.div>
+
+          {/* Center: Giant SVG name – dominates the screen */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-0 select-none pointer-events-none">
+            <div className="w-full px-0">
+              <svg
+                className="w-full h-auto"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 1000 145"
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <motion.text
+                  x="500"
+                  y="115"
+                  fontSize="138"
+                  fontWeight="900"
+                  textAnchor="middle"
+                  className="font-display fill-[#e1e6e1]"
+                  initial={{ letterSpacing: "0.15em", opacity: 0 }}
+                  animate={{ letterSpacing: "0.02em", opacity: 1 }}
+                  transition={{ duration: 1.4, delay: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+                >
+                  ARAVINDHAN
+                </motion.text>
+              </svg>
+            </div>
+            {/* "R" on second line with cinematic role label */}
+            <div className="w-full flex items-center justify-between px-3 -mt-2">
+              <motion.span
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="font-mono text-[9px] tracking-[0.3em] text-[#f73a0b] uppercase leading-none"
+              >
+                Cinematic Editor
+              </motion.span>
+              <svg
+                className="h-16 w-auto"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 160 145"
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <motion.text
+                  x="80"
+                  y="115"
+                  fontSize="138"
+                  fontWeight="900"
+                  textAnchor="middle"
+                  className="font-display fill-[#e1e6e1]"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1.0, delay: 0.45 }}
+                >
+                  R
+                </motion.text>
+              </svg>
+              <motion.span
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="font-mono text-[9px] tracking-[0.3em] text-white/30 uppercase leading-none text-right"
+              >
+                &amp; Colorist
+              </motion.span>
+            </div>
           </div>
 
-          {/* Full-width responsive SVG name */}
-          <div className="w-full select-none pointer-events-none px-1">
-            <svg
-              className="w-full h-auto max-h-[18vh]"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 1000 135"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              <motion.text
-                x="500"
-                y="110"
-                fontSize="130"
-                fontWeight="900"
-                textAnchor="middle"
-                className="font-display fill-[#e1e6e1]"
-                initial={{ letterSpacing: "0.12em", opacity: 0 }}
-                animate={{ letterSpacing: "normal", opacity: 1 }}
-                transition={{ duration: 1.3, delay: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
-              >
-                ARAVINDHAN R
-              </motion.text>
-            </svg>
-          </div>
+          {/* Bottom: subtagline */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="font-body text-[10px] text-white/40 text-center leading-relaxed tracking-wide px-6 pb-2"
+          >
+            {subtagline}
+          </motion.p>
         </div>
 
         {/* Mobile Timeline Panel – tap anywhere to move playhead, no thumbnails */}
