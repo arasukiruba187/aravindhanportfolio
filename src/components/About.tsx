@@ -72,7 +72,7 @@ export default function About({ aboutText, imageUrl }: AboutProps) {
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center max-w-6xl mx-auto w-full">
         {/* ── Left Column: Bio Narrative & Skills ── */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col justify-center">
+        <div className="col-span-12 lg:col-span-7 flex flex-col justify-center animate-fade-in">
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -123,7 +123,7 @@ export default function About({ aboutText, imageUrl }: AboutProps) {
               <motion.span
                 key={skill}
                 variants={itemVariants}
-                className="font-mono text-[8px] tracking-[0.2em] text-[#e1e6e1a0] border border-[#e1e6e115] px-3 py-1.5 uppercase bg-white/2"
+                className="font-mono text-[9px] sm:text-[8px] tracking-[0.2em] text-[#e1e6e1a0] border border-[#e1e6e115] px-3 py-1.5 uppercase bg-white/2"
               >
                 {skill}
               </motion.span>
@@ -131,12 +131,11 @@ export default function About({ aboutText, imageUrl }: AboutProps) {
           </motion.div>
         </div>
 
-        {/* ── Right Column: Portrait Image with mask-scroll parallax zoom ── */}
+        {/* ── Right Column: Portrait Image with mask-scroll parallax zoom (Compact on Mobile) ── */}
         <div className="col-span-12 lg:col-span-5 flex justify-center lg:justify-end">
           <div 
-            className="a-about-image-wrap overflow-hidden rounded-sm border border-white/5 shadow-2xl w-full max-w-[360px] lg:max-w-full relative"
+            className="a-about-image-wrap overflow-hidden rounded-sm border border-white/5 shadow-2xl w-full max-w-[320px] lg:max-w-full relative max-h-[48svh] lg:max-h-[70svh]"
             style={{
-              maxHeight: "70svh",
               aspectRatio: "3/4"
             }}
           >

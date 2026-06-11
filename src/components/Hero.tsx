@@ -102,7 +102,7 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
         <a href="/" className="a-text-link font-bold text-sm tracking-[0.25em]" data-mouse="link">
           AR
         </a>
-        <nav className="flex gap-6 md:gap-10">
+        <nav className="flex gap-4 sm:gap-6 md:gap-10">
           <button
             onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
             className="a-text-link font-mono text-[9px] md:text-[10px] tracking-[0.3em] uppercase bg-transparent border-none cursor-pointer"
@@ -132,15 +132,15 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
         style={{ opacity: contentOpacity, y: contentY }}
         className="flex-1 flex flex-col justify-between items-stretch relative"
       >
-        {/* Center Wrapper: centered between header and timeline */}
-        <div className="flex-1 relative flex items-center justify-center w-full z-10">
-          {/* Center Headings (Absolute position at the top of the center wrapper) */}
-          <div className="absolute top-0 flex flex-col items-center justify-center text-center pt-2 md:pt-4">
+        {/* Center Wrapper: centered with natural vertical flow to prevent overlap */}
+        <div className="flex-1 relative flex flex-col items-center justify-center gap-6 md:gap-10 w-full z-10 py-4">
+          {/* Center Headings */}
+          <div className="flex flex-col items-center justify-center text-center max-w-xl">
             <motion.h1
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="a-hero-title font-body text-xl md:text-3xl lg:text-4xl text-[#e1e6e1] font-light leading-none tracking-normal mb-2"
+              className="a-hero-title font-body text-lg sm:text-2xl md:text-3xl lg:text-4xl text-[#e1e6e1] font-light leading-snug tracking-normal mb-2 uppercase"
             >
               {tagline}
             </motion.h1>
@@ -148,16 +148,16 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="a-desc-sm font-body text-[10px] md:text-[12px] text-white/50 max-w-[480px] leading-relaxed"
+              className="a-desc-sm font-body text-[9px] sm:text-[11px] md:text-[12px] text-white/50 max-w-[450px] leading-relaxed px-4"
             >
               {subtagline}
             </motion.h2>
           </div>
 
           {/* Full-width responsive SVG name */}
-          <div className="w-full flex items-center justify-center select-none pointer-events-none">
+          <div className="w-full flex items-center justify-center select-none pointer-events-none px-2">
             <svg
-              className="a-hero-name w-full h-auto max-h-[30vh]"
+              className="a-hero-name w-full h-auto max-h-[22vh] sm:max-h-[30vh]"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 1000 135"
               preserveAspectRatio="xMidYMid meet"
@@ -200,10 +200,10 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
               </div>
             </div>
 
-            {/* Tracks Container */}
-            <div className="flex relative w-full h-36 md:h-44 overflow-visible">
-              {/* Left Panel: Track Headers */}
-              <div className="w-16 md:w-20 border-r border-white/10 bg-black/25 flex flex-col justify-stretch z-10">
+            {/* Tracks Container: Responsive height */}
+            <div className="flex relative w-full h-16 md:h-44 overflow-visible">
+              {/* Left Panel: Track Headers (Hidden on Mobile) */}
+              <div className="hidden md:flex w-16 md:w-20 border-r border-white/10 bg-black/25 flex-col justify-stretch z-10">
                 {/* V2 Header */}
                 <div className="flex-1 border-b border-white/5 flex items-center px-1.5 justify-between text-white/40">
                   <span className="font-bold text-[8px]">V2</span>
@@ -244,8 +244,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                 onMouseMove={handleMouseMove} 
                 onMouseLeave={handleMouseLeave}
               >
-                {/* V2 Track (Text overlays / Adjustment layers) */}
-                <div className="flex-1 border-b border-white/5 relative flex items-center px-2">
+                {/* V2 Track (Hidden on Mobile) */}
+                <div className="hidden md:flex flex-1 border-b border-white/5 relative items-center px-2">
                   <div className="absolute left-[5%] w-[40%] h-[70%] border border-[#f73a0b]/30 bg-[#f73a0b]/5 rounded-sm flex items-center justify-between px-2 text-[7px] text-[#f73a0b] opacity-60">
                     <span>Adjustment Layer [Grade]</span>
                     <span className="hidden sm:inline">LUT_Slog3_Rec709.cube</span>
@@ -255,12 +255,11 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                   </div>
                 </div>
 
-                {/* V1 Track (Main Video Clips with Staggered Entrance Scaling) */}
-                <div className="flex-1 border-b border-white/5 relative flex items-stretch py-1">
+                {/* V1 Track (Main Video Clips - Full height on Mobile) */}
+                <div className="flex-1 md:flex-initial md:h-12 relative flex items-stretch py-1">
                   {timelineItems.map((item, idx) => {
                     const widthPercent = 100 / timelineItems.length;
                     const leftPercent = idx * widthPercent;
-                    // Colors based on indexing (Resolve track coloring scheme)
                     const colors = [
                       "bg-[#1e3a8a]/60 border-[#2563eb]/50 hover:bg-[#1e3a8a]/80", // Iris Blue
                       "bg-[#581c87]/60 border-[#7c3aed]/50 hover:bg-[#581c87]/80", // Violet
@@ -283,18 +282,18 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                           transformOrigin: "bottom",
                         }}
                         onMouseEnter={() => handleTimelineHover(idx, item)}
-                        className={`absolute top-1 bottom-1 border rounded-[3px] flex flex-col justify-between p-1.5 cursor-pointer transition-all duration-200 z-10 overflow-visible ${colorClass}`}
+                        className={`absolute top-1 bottom-1 border rounded-[3px] flex flex-col justify-center gap-1 p-1 md:p-1.5 cursor-pointer transition-all duration-200 z-10 overflow-hidden ${colorClass}`}
                         data-mouse="link"
                       >
-                        <div className="flex justify-between items-center leading-none">
-                          <span className="font-bold text-[7px] md:text-[8px] text-white truncate max-w-[80%] uppercase">
-                            {String(item.title).replace(/\s+/g, "_")}.mp4
+                        <div className="flex justify-center md:justify-between items-center leading-none">
+                          <span className="font-bold text-[8px] md:text-[8px] text-white truncate max-w-[95%] uppercase">
+                            {String(item.title).replace(/\s+/g, "_")}
                           </span>
                           <span className="text-[6px] text-white/40 hidden md:inline font-mono">
-                            V{String(idx + 1).padStart(2, "0")}
+                            .mp4
                           </span>
                         </div>
-                        <div className="flex justify-between items-center text-[6px] text-white/50 leading-none">
+                        <div className="hidden md:flex justify-between items-center text-[6px] text-white/50 leading-none">
                           <span className="truncate max-w-[60%]">{item.category}</span>
                           <span>24fps</span>
                         </div>
@@ -303,8 +302,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                   })}
                 </div>
 
-                {/* A1 Track (Main Audios with custom waveforms) */}
-                <div className="flex-1 border-b border-white/5 relative flex items-stretch py-1">
+                {/* A1 Track (Hidden on Mobile) */}
+                <div className="hidden md:flex flex-1 border-b border-white/5 relative items-stretch py-1">
                   {timelineItems.map((item, idx) => {
                     const widthPercent = 100 / timelineItems.length;
                     const leftPercent = idx * widthPercent;
@@ -334,8 +333,8 @@ export default function Hero({ tagline, subtagline, items, activeVideoUrl, onVid
                   })}
                 </div>
 
-                {/* A2 Track (Background Music Track) */}
-                <div className="flex-1 relative flex items-center px-2">
+                {/* A2 Track (Hidden on Mobile) */}
+                <div className="hidden md:flex relative items-center px-2">
                   <div className="absolute left-[1%] w-[98%] h-[70%] border border-teal-500/30 bg-teal-950/30 rounded-sm flex items-center justify-between px-2 text-[7px] text-teal-400/90 overflow-hidden">
                     <span className="truncate max-w-[30%] uppercase">Soundtrack_Cinematic_Foley.wav</span>
                     <div className="flex-1 h-3 flex items-center justify-around gap-[1.5px] opacity-25 px-8">

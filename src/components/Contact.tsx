@@ -40,7 +40,7 @@ export default function Contact({ email, phone, socials }: ContactProps) {
       data-role="section"
       data-section="contact"
     >
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full px-2 sm:px-0">
         {/* Section tag header */}
         <motion.h2
           initial={{ opacity: 0 }}
@@ -62,8 +62,8 @@ export default function Contact({ email, phone, socials }: ContactProps) {
           Let&apos;s work together. If you have an idea, a project, or simply want to talk about visuals, pace, and editing, feel free to reach out. You can email me directly or drop a hi through other channels.
         </motion.p>
 
-        {/* Mobile-only social links header */}
-        <div className="flex sm:hidden items-center justify-between pb-6 gap-3 border-b border-white/5 mb-6">
+        {/* Mobile-only social links header (With padding to prevent edge touching) */}
+        <div className="flex sm:hidden items-center justify-between pb-6 gap-3 border-b border-white/5 mb-6 px-1.5">
           {socials.Instagram && (
             <a
               href={socials.Instagram}
@@ -88,41 +88,19 @@ export default function Contact({ email, phone, socials }: ContactProps) {
           )}
         </div>
 
-        {/* Giant full-width responsive SVG email link with custom letter-spacing sweep */}
+        {/* Giant full-width responsive HTML text email link (Optimized responsive text to avoid SVG compression) */}
         <motion.a
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
           href={`mailto:${displayEmail}?subject=Video%20Editing%20Query`}
           target="_blank"
           rel="noreferrer noopener"
-          className="block w-full pb-4 pointer-events-auto border-b border-white/10 hover:border-[#f73a0b] transition-colors duration-300"
+          className="block w-full pb-6 border-b border-white/10 hover:border-[#f73a0b] transition-colors duration-300 font-display text-[6.2vw] sm:text-5xl md:text-6xl lg:text-7xl text-[#e1e6e1] hover:text-[#f73a0b] uppercase tracking-wide break-all leading-[1.1]"
           data-mouse="link"
         >
-          <svg
-            className="w-full h-auto"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 800 120"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <motion.text
-              x="0"
-              y="75"
-              fontSize="85"
-              fontWeight="800"
-              textLength="800"
-              lengthAdjust="spacingAndGlyphs"
-              className="font-display fill-[#e1e6e1] hover:fill-[#f73a0b] transition-colors duration-300"
-              dominantBaseline="middle"
-              initial={{ letterSpacing: "0.06em", opacity: 0 }}
-              whileInView={{ letterSpacing: "normal", opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] as const }}
-            >
-              {displayEmail}
-            </motion.text>
-          </svg>
+          {displayEmail}
         </motion.a>
 
         {/* Secondary Contact Channels row with stagger entrance reveals */}
@@ -131,7 +109,7 @@ export default function Contact({ email, phone, socials }: ContactProps) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 pt-8 w-full"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-6 pt-8 w-full px-1.5 sm:px-0"
         >
           {/* Desktop-only Instagram link */}
           {socials.Instagram ? (

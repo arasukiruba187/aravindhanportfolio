@@ -50,7 +50,7 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
       >
         (Works)
       </h2>
-      <div className="flex align-items-end justify-between border-b border-white/10 pb-6 mb-16">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-16 gap-4">
         <h3 className="a-section-title-lg font-display text-4xl md:text-6xl lg:text-7xl text-[#e1e6e1] font-bold uppercase leading-none tracking-normal">
           Selected Projects
         </h3>
@@ -209,10 +209,10 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
 
               {/* Card Footer Details */}
               <div className="w-full flex items-center justify-between pt-3">
-                <span className="font-display text-xs md:text-sm uppercase tracking-wider text-[#e1e6e1] group-hover:text-[#f73a0b] transition-colors duration-300">
+                <span className="font-display text-lg sm:text-base md:text-sm uppercase tracking-wider text-[#e1e6e1] group-hover:text-[#f73a0b] transition-colors duration-300">
                   {item.title}
                 </span>
-                <span className="font-mono text-[7px] md:text-[8px] tracking-[0.2em] text-white/30 uppercase">
+                <span className="font-mono text-[8px] sm:text-[9px] md:text-[8px] tracking-[0.2em] text-white/30 uppercase">
                   {item.category}
                 </span>
               </div>
