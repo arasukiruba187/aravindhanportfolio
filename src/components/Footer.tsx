@@ -16,7 +16,7 @@ export default function Footer({ name }: { name: string }) {
             (India, Available Worldwide)
           </span>
           <span className="font-body text-[9px] md:text-[10px] tracking-[0.1em] font-light uppercase">
-            Cinematic Video Editor &amp; Colorist
+          Cinematic video editor
           </span>
           <div className="flex flex-row gap-6 items-center">
             <a
@@ -39,7 +39,7 @@ export default function Footer({ name }: { name: string }) {
           (India • Available Worldwide)
         </span>
         <span className="font-body text-[9px] tracking-[0.1em] font-light uppercase text-white/50">
-          Cinematic Video Editor &amp; Colorist
+          Cinematic video editor
         </span>
         <div className="flex flex-col gap-2.5 items-center pt-2">
           <a

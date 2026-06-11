@@ -92,7 +92,7 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
               ARAVINDHAN R
             </h1>
             <p className="font-mono text-[8px] md:text-[9px] tracking-[0.25em] text-white/35 uppercase">
-              Video Editor &amp; Colorist
+              Cinematic video editor
             </p>
           </div>
 
