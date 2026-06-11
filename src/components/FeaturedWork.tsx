@@ -183,15 +183,70 @@ export default function FeaturedWork({ items, onPlay }: { items: PortfolioItem[]
           </h3>
         </div>
 
-        {/* 2-column grid – last odd item spans full row for a 2,2,1 pattern */}
+        {/* 2-column grid – last odd item stays same size but centers in row */}
         <div className="grid grid-cols-2 gap-4 px-0">
           {items.map((item, idx) => {
             const isLastOdd = idx === items.length - 1 && items.length % 2 !== 0;
 
+            // Wrap the last odd item in a col-span-2 centering shell, keeping card at col-span-1 width
+            if (isLastOdd) {
+              return (
+                <div key={item.id} className="col-span-2 flex justify-center">
+                  <motion.div
+                    className="flex flex-col w-[calc(50%-8px)]"
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-30px" }}
+                    transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] as const }}
+                  >
+                    {/* Card number */}
+                    <div className="flex justify-between items-center pb-1.5 mb-2 font-mono text-[8px] tracking-wider text-white/35">
+                      <span className="text-[#f73a0b] font-bold">{String(idx + 1).padStart(2, "0")}</span>
+                      <span className="uppercase text-[7px] text-white/40">{item.category}</span>
+                    </div>
+                    {/* Thumbnail frame – 16:9 */}
+                    <div
+                      onClick={() => onPlay(item)}
+                      className="relative overflow-hidden bg-[#101010] border border-white/10 rounded-sm cursor-pointer shadow-xl aspect-video w-full"
+                    >
+                      {(() => {
+                        const getThumbnailUrl = (pItem: PortfolioItem) => {
+                          if (pItem.thumbnailUrl && pItem.thumbnailUrl.trim() !== "") {
+                            const driveMatch = pItem.thumbnailUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+                            if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w400`;
+                            return pItem.thumbnailUrl;
+                          }
+                          const parsed = parseMediaUrl(pItem.youtubeUrl || pItem.videoUrl);
+                          if (parsed.platform === "youtube" && parsed.thumbnailUrl) return parsed.thumbnailUrl;
+                          if (parsed.platform === "drive" && parsed.thumbnailUrl) return parsed.thumbnailUrl;
+                          return "";
+                        };
+                        const thumb = getThumbnailUrl(item);
+                        return (
+                          <div className="absolute inset-0 w-full h-full overflow-hidden">
+                            {thumb && <img src={thumb} alt={item.title} className="absolute inset-0 w-full h-full object-cover z-0" />}
+                            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10 hover:bg-black/30 active:bg-black/40 transition-colors">
+                              <div className="w-9 h-9 rounded-full border border-white/50 flex items-center justify-center backdrop-blur-sm bg-black/25">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                    {/* Title */}
+                    <div className="pt-2">
+                      <span className="font-display text-sm uppercase tracking-wide text-[#e1e6e1] leading-tight line-clamp-1">{item.title}</span>
+                    </div>
+                  </motion.div>
+                </div>
+              );
+            }
+
             return (
               <motion.div
                 key={item.id}
-                className={`flex flex-col ${isLastOdd ? "col-span-2 max-w-xs mx-auto w-full" : ""}`}
+                className="flex flex-col"
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
